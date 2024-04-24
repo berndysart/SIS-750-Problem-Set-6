@@ -1,0 +1,14 @@
+"0","library(tidyverse)"
+"0","library(scales)"
+"0","library(lfe)"
+"0","library(stargazer)"
+"2","
+Please cite as: 
+
+"
+"2"," Hlavac, Marek (2022). stargazer: Well-Formatted Regression and Summary Statistics Tables.
+"
+"2"," R package version 5.2.3. https://CRAN.R-project.org/package=stargazer 
+
+"
+"0","library(knitr)"

@@ -1,0 +1,143 @@
+---
+title: "COVID 19 Pandemic - Deaths, Mask Usage, and Vaccination"
+subtitle: "Problem Set 6"
+author: "Bern DySart"
+date: "2024-04-10"
+output: pdf_document
+---
+
+```{r Setupchunk, include = FALSE, echo = FALSE}
+library(tidyverse)
+library(scales)
+library(lfe)
+library(modelsummary)
+```
+
+```{r CleanData, include = TRUE, echo = FALSE}
+load('covid.RData')
+```
+
+##Summary
+
+This report briefly examines a merged dataset covering COVID-19 vaccination rates and deaths by county in the United States. The last data collection was in 2023. There are 3,142 observations and 9 variables. 
+
+Telling where data from and vaccination rates, dumping a link as a footnote
+
+Citation
+
+##Data - Deaths Nationwide. 
+
+The following is a visualisation of deaths due to COVID nationwide. The data set is organised by state then secondarily by county. The count is the number of confirmed and probable deaths from COVID as recorded per county and the frequency of each death count. The minimum number of deaths for a county is zero and the maximum number of deaths is 7,034 for a county. The average number of deaths per county is estimated at 84 while the median number of deaths is 29. The visualisation shows a high frequency of deaths just under a hundred but above fifty which aligns with the mean number of deaths per county nationwide. The higher the death count, the shorter the bar which shows that this is not as commonly see per county when it comes to deaths due to COVID. Los Angeles County in California was the county with the highest number of recorded and probable deaths at 7,034. There were numerous counties spanning the states of Alaska, Colorado, Hawaii, Massachusetts, Montana, Nebraska, New Mexico, North Dakota, North Carolina, South Dakota, Texaas, Utah, Washington, North Mariana Islands, and Virginia.  
+
+```{r Death, echo = FALSE, include = TRUE, message = FALSE, warning = FALSE, fig.height=3, fig.width=5}
+covid |>
+  ggplot(aes(x = 1+deaths)) +
+  geom_histogram(color = 'black', fill = 'darkseagreen3') +
+  scale_x_log10() +
+  scale_y_continuous(
+    expand = c(0,0)
+  ) +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(colour = 'black'),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(
+    title = 'COVID Deaths Nationwide',
+    x = 'Deaths',
+    y = 'Frequency'
+  ) 
+```
+
+##Data - Always Masking. 
+
+The following is a visualisation of respondents masking a percentage of the time when going out to interact with others or into public spaces. The data includes only answers where respondents were in fact masking. As seen in the visualisation, along the x axis is the perrceptange of always wearing a mask with the markers of 25%, 50% and 75%. The lowest available percentage is 11.5% of the time people were masking and the maximum is 88.9% of the time respondents were masking. The average is around 50% of the time people were always masking.The county with the highest masking rate is Inyo county in California at 88.9% and the county with the lowest masking percentage is Valley county in Montana at 11.5%.
+
+```{r Mask, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE, fig.height=3, fig.width=5}
+covid |>
+  ggplot(aes(x = always.mask*100)) +
+  geom_histogram(color = 'black', fill = 'steelblue3')+
+  scale_y_continuous(
+    expand = c(0,0)
+  ) +
+  scale_x_continuous(
+    breaks = c(25, 50, 75),
+    labels = c('25%', '50%', '75%')
+  ) +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(colour = 'black'),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(
+    title = 'Always Wearing a Mask',
+    x = 'Wears a Mask',
+    y = 'Frequency'
+  )
+```
+
+Data - Vaccination Rates. 
+
+The first visualisation examines the over all rates of vaccination across all counties in the United States. This variable measures the number of people who were vaccinated against COVID during the pandemic. The smallest vaccination percentage in a county is at 11.3% for Slope County North Dakota. The largest vaccination percentage in a county is at 95% which is seen in numerous counties within the states of Arizona, Claifornia, Colorado, Georgia, Kansas, New Mexico, Texas, and Wyoming. The mean vaccination rate is aroung 53.4% which aligns with the visualisation of the highest frequency being just about the 50% mark.A majority of the data ia just below or above 50% with the data jumping rapidly in the lowest and highest percentage directions. 
+
+```{r OverallVaccine, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE, fig.height=3, fig.width=5}
+covid |>
+  ggplot(aes(x = vax.complete)) +
+  geom_histogram(color = 'black', fill = 'indianred4')+
+  scale_y_continuous(
+    expand = c(0,0)
+  ) +
+  scale_x_continuous(
+    breaks = c(25, 50, 75),
+    labels = c('25%', '50%', '75%')
+  ) +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(colour = 'black'),
+    plot.title = element_text(hjust = 0.5)
+  ) +labs(
+    title = 'Percentage of People Vaccinated',
+    x = 'Vaccinated',
+    y = 'Frequency'
+  )
+```
+
+This second visualisation examines rates of vaccinations for those who are identified as belonging to the social vulnerability index. The index is sorted from least vulnerable to most vulnerable as denoted by the labels A, B, C, and D. Looking at all the groups the average vaccination rate is above or around 50% vaccinated for all four groups The most vulnerable group, as grouped into D has a mean of 50% vaccination rates with some outliers that are in 75% or above. All four are in the same general area and are on track with the overall vaccination rates for all counties across the United States. 
+
+```{r SVIVaccine, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE, fig.height=3, fig.width=5}
+covid |>
+  na.omit(svi.index) |>
+  ggplot(aes(y = vax.complete, x = svi.index)) +
+  geom_boxplot(fill = 'honeydew4') +
+  scale_y_continuous(
+    breaks = c(25, 50, 75),
+    labels = c('25%', '50%', '75%')
+  )+
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(colour = 'black'),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(
+    title = 'Vaccination Rate for Social Vulnerability Index',
+    y = 'Vaccination Rates',
+    x = 'Social Vulnerability Index'
+  )
+```
+
+Vaccination and Mask Usage on 2022 COVID Deaths
+
+See Figure 1. The regression table shows three models of the number of deaths from covid per county scaled by total population in the United States. In model one, a one point increase in masking per county meant that there was a 112 point decrease in deaths. This number is significant. In comparison to model 2, a one point increase in vaccination per county meant that there was a 1 point decrease in deaths and this is also significant. When looking at model 3, the one point increase in masking and vaccination did mean that there was an 83 point decrease and a .9 decrease in death respectively. Both of these numbers are significant. Model 3 does show that masking and vaccinations did impact both deaths. When beginning to control for the greater population in models 1 and 2, there is a significantly smaller decrease in death. Also looking at controls across all three models, when there is a one point increase in the social vulnerability index there is an increase in deaths no matter controls for either vaccination, masking, or both.
+
+```{r DeathRegression, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+mods = list(
+  m1 = felm(deaths.scaled ~ always.mask + population + svi.index | state, data = covid),
+  m2 = felm(deaths.scaled ~ vax.complete + population + svi.index | state, data = covid),
+  m3 = felm(deaths.scaled ~ always.mask + vax.complete + svi.index | state, data = covid)
+)
+modelsummary(mods, 
+             gof_map = 'nobs',
+             stars = c('*' = 0.05),
+             statistic = NULL, 
+             title = 'Effect of Vaccination and Mask Usage on 2022 COVID Deaths')
+```
