@@ -18,7 +18,7 @@ load('covid.RData')
 ```
 
 # Summary
- wo
+
 This report briefly examines a merged dataset covering COVID-19 vaccination rates and deaths by county in the United States. The data that was used was from the Center for Disease Control (CDC) COVID data tracker that is constantly being updated with more data across the United States. It also utilises data from the New York Times case coumting map that dates back to 2020 and is constantly being updated as well. The last data collection was in 2023. There are 3,142 observations and 9 variables. 
 
 The onset of the COVID-19 pandemic brought an unprecedent wave of deaths on every country internationally but also in the United States and each state was effected differently. The report goes on to show the distribution of deaths per county that were related to COVID with the lowest counting having 29 deaths and the highest at 7,034. 
@@ -27,7 +27,8 @@ The data is also used to show the percentage of people who answered a question a
 
 Finally the report ends with a visualisation and brief analysis on the impact of masking on death rates in 2022. This shows a correlation between those who did mask and the vaccination rates and the decrease in deaths from COVID from 2021. 
 
-Citation 
+### Citations 
+
 - "Coronavirus in the U.S.: Latest Map and Case Count.” The New York Times, March 3, 2020. https://www.nytimes.com/interactive/2021/us/covid-cases.html. 
 
 - Centers for Disease Control and Prevention. COVID Data Tracker. Atlanta, GA: U.S. Department of Health and Human Services, CDC; 2024, May 01. https://covid.cdc.gov/covid-data-tracker
